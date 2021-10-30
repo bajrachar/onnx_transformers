@@ -90,7 +90,7 @@ def create_model_for_provider(model_path: str, provider: str) -> InferenceSessio
     session = InferenceSession(model_path, options, providers=[provider])
     session.disable_fallback()
     print(session.get_providers())
-    assert 'CUDAExecutionProvider' in session.get_providers()   # Make sure there is GPU
+    #assert 'CUDAExecutionProvider' in session.get_providers()   # Make sure there is GPU
 
     return session
 
