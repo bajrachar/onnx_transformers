@@ -78,7 +78,8 @@ os.environ["OMP_WAIT_POLICY"] = "ACTIVE"
 
 
 def create_model_for_provider(model_path: str, provider: str) -> InferenceSession:
-
+    print(provider)
+    print(get_all_providers())
     assert provider in get_all_providers(), f"provider {provider} not found, {get_all_providers()}"
 
     # Few properties that might have an impact on performances (provided by MS)
