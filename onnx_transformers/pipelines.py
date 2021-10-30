@@ -89,6 +89,8 @@ def create_model_for_provider(model_path: str, provider: str) -> InferenceSessio
     # Load the model as a graph and prepare the CPU backend
     session = InferenceSession(model_path, options, providers=[provider])
     session.disable_fallback()
+    print(session.get_providers())
+    assert 'CUDAExecutionProvider' in session.get_providers()   # Make sure there is GPU
 
     return session
 
@@ -553,7 +555,7 @@ class Pipeline(_ScikitCompat):
                 self._export_onnx_graph(input_names_path)
 
             logger.info(f"loading onnx graph from {self.graph_path.as_posix()}")
-            self.onnx_model = create_model_for_provider(str(graph_path), "CPUExecutionProvider")
+            self.onnx_model = create_model_for_provider(str(graph_path), "CUDAExecutionProvider")
             self.input_names = json.load(open(input_names_path))
             self.framework = "np"
             self._warup_onnx_graph()
