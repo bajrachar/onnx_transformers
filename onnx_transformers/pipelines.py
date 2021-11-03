@@ -1639,6 +1639,7 @@ def pipeline(
     tokenizer: Optional[Union[str, PreTrainedTokenizer]] = None,
     framework: Optional[str] = None,
     onnx: bool = True,
+    thread_count: int = 1,
     **kwargs
 ) -> Pipeline:
     """
