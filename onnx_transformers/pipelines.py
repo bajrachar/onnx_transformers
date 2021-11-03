@@ -1046,6 +1046,7 @@ class TokenClassificationPipeline(Pipeline):
         binary_output: bool = False,
         onnx: bool = True,
         graph_path: Optional[str] = None,
+        thread_count: int = 1,
         ignore_labels=["O"],
         task: str = "",
         grouped_entities: bool = False,
@@ -1062,6 +1063,7 @@ class TokenClassificationPipeline(Pipeline):
             config=config,
             onnx=onnx,
             graph_path=graph_path,
+            thread_count=thread_count,
         )
 
         # self.check_model_type(
@@ -1779,6 +1781,7 @@ def pipeline(
         task=task,
         onnx=onnx,
         graph_path=graph_path,
+        thread_count=thread_count,
         config=config,
         **kwargs,
     )
