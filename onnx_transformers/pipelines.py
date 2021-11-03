@@ -77,21 +77,19 @@ os.environ["OMP_NUM_THREADS"] = str(cpu_count(logical=True))
 os.environ["OMP_WAIT_POLICY"] = "ACTIVE"
 
 
-def create_model_for_provider(model_path: str, provider: str) -> InferenceSession:
-    print(provider)
-    print(get_all_providers())
+def create_model_for_provider(model_path: str, provider: str, thread_count: int) -> InferenceSession:
     assert provider in get_all_providers(), f"provider {provider} not found, {get_all_providers()}"
+
+    print(f'Number of threads: {thread_count}\n')
 
     # Few properties that might have an impact on performances (provided by MS)
     options = SessionOptions()
-    options.intra_op_num_threads = 1
+    options.intra_op_num_threads = thread_count
     options.graph_optimization_level = GraphOptimizationLevel.ORT_ENABLE_ALL
-
+    
     # Load the model as a graph and prepare the CPU backend
     session = InferenceSession(model_path, options, providers=[provider])
     session.disable_fallback()
-    print(session.get_providers())
-    #assert 'CUDAExecutionProvider' in session.get_providers()   # Make sure there is GPU
 
     return session
 
@@ -525,6 +523,7 @@ class Pipeline(_ScikitCompat):
         task: str = "",
         args_parser: ArgumentHandler = None,
         device: int = -1,
+        thread_count: int = 1,
         binary_output: bool = False,
         onnx: bool = True,
         graph_path: Optional[Path] = None,
@@ -542,6 +541,7 @@ class Pipeline(_ScikitCompat):
         self.modelcard = modelcard
         self.framework = framework
         self.device = device if framework == "tf" else torch.device("cpu" if device < 0 else "cuda:{}".format(device))
+        self.thread_count = thread_count
         self.binary_output = binary_output
         self._args_parser = args_parser or DefaultArgumentHandler()
 
@@ -556,7 +556,7 @@ class Pipeline(_ScikitCompat):
                 self._export_onnx_graph(input_names_path)
 
             logger.info(f"loading onnx graph from {self.graph_path.as_posix()}")
-            self.onnx_model = create_model_for_provider(str(graph_path), "CUDAExecutionProvider")
+            self.onnx_model = create_model_for_provider(str(graph_path), "CPUExecutionProvider", thread_count)
             self.input_names = json.load(open(input_names_path))
             self.framework = "np"
             self._warup_onnx_graph()
