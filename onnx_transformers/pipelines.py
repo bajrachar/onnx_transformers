@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Sequence, Tuple, Union
 
 import numpy as np
-from onnxruntime import GraphOptimizationLevel, InferenceSession, SessionOptions, get_all_providers
+from onnxruntime import GraphOptimizationLevel, InferenceSession, SessionOptions, ExecutionMode, get_all_providers
 from psutil import cpu_count
 from transformers.configuration_auto import AutoConfig
 from transformers.configuration_utils import PretrainedConfig
@@ -85,7 +85,7 @@ def create_model_for_provider(model_path: str, provider: str, thread_count: int)
     # Few properties that might have an impact on performances (provided by MS)
     options = SessionOptions()
     options.intra_op_num_threads = thread_count
-    options.execution_mode = rt.ExecutionMode.ORT_SEQUENTIAL
+    options.execution_mode = ExecutionMode.ORT_SEQUENTIAL
     options.graph_optimization_level = GraphOptimizationLevel.ORT_ENABLE_ALL
     options.enable_profiling = True
     
