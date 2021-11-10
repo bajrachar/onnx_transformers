@@ -87,7 +87,6 @@ def create_model_for_provider(model_path: str, provider: str, thread_count: int)
     options.inter_op_num_threads = thread_count
     options.intra_op_num_threads = thread_count
     options.graph_optimization_level = GraphOptimizationLevel.ORT_ENABLE_ALL
-    options.enable_profiling = True
     
     # Load the model as a graph and prepare the CPU backend
     session = InferenceSession(model_path, options, providers=[provider])
