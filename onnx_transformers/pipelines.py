@@ -85,7 +85,7 @@ def create_model_for_provider(model_path: str, provider: str, thread_count: int)
     # Few properties that might have an impact on performances (provided by MS)
     options = SessionOptions()
     options.inter_op_num_threads = thread_count
-    options.execution_mode = ExecutionMode.ORT_PARALLEL
+    options.intra_op_num_threads = thread_count
     options.graph_optimization_level = GraphOptimizationLevel.ORT_ENABLE_ALL
     options.enable_profiling = True
     
